@@ -1,26 +1,36 @@
-def add_recipe():
+import json
 
-   name = input("Enter recipe name: ")
+def add_recipe():
+    name = input("Enter recipe name: ")
     ingredients = input("Enter recipe ingredients (separated by commas): ")
-    directions = input("Enter recipe directions: ")
+    
+ print("Enter recipe directions (type 'done' on a new line when finished):")
+    directions = []
+    while True:
+        line = input()
+        if line.lower() == "done":
+            break
+        directions.append(line)
     
    with open("recipes.json", "r") as f:
         data = json.load(f)
         data[name] = {"ingredients": ingredients.split(", "), "directions": directions}
     
-   with open("recipes.json", "w") as f:
+  with open("recipes.json", "w") as f:
         json.dump(data, f)
 
 def search_recipe():
     term = input("Enter search term: ")
     
-   with open("recipes.json", "r") as f:
+ with open("recipes.json", "r") as f:
         data = json.load(f)
         for name, recipe in data.items():
-            if term in name or term in recipe["ingredients"] or term in recipe["directions"]:
+            if term in name or term in recipe["ingredients"] or term in ' '.join(recipe["directions"]):
                 print(f"Recipe: {name}")
                 print(f"Ingredients: {', '.join(recipe['ingredients'])}")
-                print(f"Directions: {recipe['directions']}")
+                print("Directions:")
+                for step in recipe['directions']:
+                    print(step)
                 print()
 
 def main():
@@ -41,3 +51,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
